@@ -193,7 +193,7 @@ for repeatIteration = 1:repeatIterationCount
                 if usingLLC
                     trainedPictureSparseRepresent(:, tmpPictureCount) = LLCPooling(feaSet, dictionary, pyramid, LLCKnn);
                 elseif SCKnn
-                    trainedPictureSparseRepresent(:, tmpPictureCount) = sc_approx_pooling(feaSet, dictionary, pyramid, gamma, SCKNN);
+                    trainedPictureSparseRepresent(:, tmpPictureCount) = sc_approx_pooling(feaSet, dictionary, pyramid, gamma, SCKnn);
                 else
                     trainedPictureSparseRepresent(:, tmpPictureCount) = sc_pooling(feaSet, dictionary, pyramid, gamma);
                 end

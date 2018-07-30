@@ -131,7 +131,7 @@ for row = 1:tmpImageRows
     end
 end
 
-stop = true;
+stop = false;
 for row = tmpImageRows:-1:1
     for col = 1:tmpImageCols
         if finalOpenedImage(row, col) == 1
