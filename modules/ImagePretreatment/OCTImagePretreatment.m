@@ -1,7 +1,9 @@
-function [averageImagePretreatmentTime, averageImageWidth, averageImageHeight, heightVector]= OCTImagePretreatment(sourceImageDir, outputImageDir)
+function [averageImagePretreatmentTime, averageImageWidth, averageImageHeight]= OCTImagePretreatment(sourceImageDir, outputImageDir)
 
 %?BM3D?????????
 addpath('BM3D');
+
+usingSegmentationResult = true;
 
 imageType = 'jpg';
 outputPictureType = 1;
@@ -41,6 +43,12 @@ for sourceImageFolderCounter = 1:length(sourceImageFolders)
             imagePath = fullfile(sourceImageDir, sourceImageFolderNamge, images(imageCounter).name);
 startTime = clock;
             disp(imagePath);
+            
+            %fid = fopen('test.txt', 'a');
+            %fprintf(fid, images(imageCounter).name);
+            %fprintf(fid, '\n');
+            %fclose(fid);
+            %continue;
 
             %????????
             originalImage = imread(imagePath);
@@ -55,10 +63,17 @@ startTime = clock;
 
             %???double?????MATLAB????
             originalImage = im2double(originalImage);
-optimizeTime = clock;
-            [tmpImage, openedImage, columnTop, columnBottom,timeResults] = generateOptimizeImage(originalImage, outputPictureType, skipThreshold,sourceImageFolderNamge, images(imageCounter).name,timeResults);
-timeResults(1,2) = timeResults(1,2) + etime(clock, optimizeTime);
-flattenTime = clock;
+            optimizeTime = clock;
+            
+            if usingSegmentationResult
+                [tmpImage, openedImage, columnTop, columnBottom, timeResults] = directlyOptimizeImage(originalImage, skipThreshold, images(imageCounter).name, timeResults);
+            else
+                [tmpImage, openedImage, columnTop, columnBottom, timeResults] = generateOptimizeImage(originalImage, outputPictureType, skipThreshold, images(imageCounter).name, timeResults);
+            end
+            
+            timeResults(1,2) = timeResults(1,2) + etime(clock, optimizeTime);
+            flattenTime = clock;
+
             [outputImage] = flattenImage(tmpImage, openedImage, columnTop, columnBottom, skipThreshold);
 timeResults(1,3) = timeResults(1,3) + etime(clock, flattenTime);
             imwrite(outputImage, fullfile(outPutImageFolder, strcat('aligned_', images(imageCounter).name)));
@@ -72,8 +87,8 @@ timeResults(1,1) = timeResults(1,1) + etime(clock, startTime);
     end
 end
 
-averageImgFlattentime = pictureTimeSum / totalImageCount;
-averageHeight = pictureHeightSum / totalImageCount;
-averageWidth = pictureWidthSum / totalImageCount;
+averageImagePretreatmentTime = pictureTimeSum / totalImageCount;
+averageImageHeight = pictureHeightSum / totalImageCount;
+averageImageWidth = pictureWidthSum / totalImageCount;
 save('result.mat','timeResults');
 end

@@ -24,7 +24,7 @@ dictionaryCategory = 'OCT';
 runImagePretreatment = false;
 
 %是否计算SIFT值
-runCalculateSift = true;
+runCalculateSift = false;
 %每个用于计算SIFT值的patch的大小，单位为像素
 patchSize = 16;
 %两个patch之间的间隔，单位为像素
@@ -35,7 +35,7 @@ maxImageSize = 1000;
 nrmlThreshold = 1;
 
 %是否重新随机选择一批图片
-runRamdom = false;
+runRamdom = true;
 
 %是否计算字典
 runDictionaryTraining = true;
@@ -86,7 +86,7 @@ sparseCodingFile = fullfile(dictionaryDataDir, strcat('Sparse_', dictionaryCateg
 svmFile = fullfile(dictionaryDataDir, 'svm.mat');
 
 %进行分类的迭代次数，迭代多次则可取得更精确的结果
-repeatIterationCount = 10;
+repeatIterationCount = 1;
 %构造用于记录分类结果的数据结构
 accuracyRatingResult = zeros(repeatIterationCount + 1, size(pictureCount, 2));
 %是否在运行结束后关机
@@ -100,7 +100,7 @@ if runImagePretreatment
     imageTreatmentTimeStart = clock;
 
     %运行图片预处理，获得有关统计信息
-    [averageImagePretreatmentTime, averageWidth, averageHeight] = OCTImagePretreatment(sourceImageDir, pretreatedImageDir);
+    [averageImagePretreatmentTime, averageImageWidth, averageImageHeight] = OCTImagePretreatment(sourceImageDir, pretreatedImageDir);
 
     %计算预处理部分花费的时间，并存储有关信息
     timeData.imageTreatmentTime = etime(clock, imageTreatmentTimeStart);

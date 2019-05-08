@@ -1,25 +1,21 @@
-function [tmpImage, openedImage, columnTop, columnBottom,timeResults] = generateOptimizeImage(originalImage, outputPictureType, skipThreshold,sourceImageFolderNamge, imageName,timeResults)
+function [tmpImage, openedImage, columnTop, columnBottom,timeResults] = generateOptimizeImage(originalImage, outputPictureType, skipThreshold, imageName, timeResults)
 
 [originalImageRows, originalImageCols] = size(originalImage);
 
-%?????????????
 tmpImage = zeros(originalImageRows + 200, originalImageCols);
 tmpImage(101:100 + originalImageRows, :) = originalImage;
 
 [tmpImageRows, tmpImageCols] = size(tmpImage);
 
-%??BM3D?????????
-%BM3DImage = medfilt2(tmpImage, [15, 15]);
+BM3DImage = medfilt2(tmpImage, [15, 15]);
 BM3Dstart = clock;
-%sigma = 20;
-%randn('seed', 0);
-%BM3DImage = BM3DImage + (sigma/255)*randn(size(BM3DImage));
+sigma = 20;
+randn('seed', 0);
+BM3DImage = BM3DImage + (sigma/255)*randn(size(BM3DImage));
 
-%[NA, BM3DImage] = BM3D(1, BM3DImage, sigma);
-%save(fullfile('BM3Dcache',sourceImageFolderNamge ,strcat(imageName, '.mat')), 'BM3DImage');
+[NA, BM3DImage] = BM3D(1, BM3DImage, sigma);
 timeResults(1,4) = timeResults(1,4) + etime(clock, BM3Dstart);
-load(fullfile('BM3Dcache',sourceImageFolderNamge ,strcat(imageName, '.mat')));
-%??????????????
+
 [level, EM] = graythresh(BM3DImage);
 binaryImage = im2bw(BM3DImage, level);
 
@@ -120,10 +116,4 @@ case 4
             end
         end
     end
-end
-
-if strcmp(imageName,'cropped_159.jpg')
-    save('159.mat');
-end
-
 end
